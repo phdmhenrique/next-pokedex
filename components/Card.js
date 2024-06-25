@@ -14,6 +14,7 @@ export default function Card({ pokemon }) {
         height={150}
         alt={pokemon.name}
         src={imageUrl}
+        unoptimized
       />
       <p className={styles.id}>#{pokemon.id}</p>
       <h3 className={styles.title}>{pokemon.name}</h3>

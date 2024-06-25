@@ -1,5 +1,7 @@
 import Image from "next/image";
 import styles from "../../styles/Pokemon.module.css";
+import { img } from '../../styles/Card.module.css'
+import { useRouter } from 'next/router'
 
 export const getStaticPaths = async () => {
   const maxPokemons = 251;
@@ -17,7 +19,7 @@ export const getStaticPaths = async () => {
 
   return {
     paths,
-    fallback: false,
+    fallback: true,
   };
 };
 
@@ -26,23 +28,41 @@ export const getStaticProps = async (context) => {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
   const data = await res.json();
 
+  if (!res.ok) {
+    return {
+      notFound: true,
+    }
+  }
+
   return {
     props: { pokemon: data },
   };
 };
 
 export default function Pokemon({ pokemon }) {
+  
+  const router = useRouter()
+  
+  if(router.isFallback) {
+    return <div>Carregando...</div>
+  }
+
+  if (!pokemon) {
+    return <div>Pokemon não encontrado.</div>;
+  }
+
   const imageUrl = `https://raw.githubusercontent.com/wellrccity/pokedex-html-js/master/assets/img/pokemons/poke_${pokemon.id}.gif`;
 
   return (
     <div className={styles.pokemon_container}>
       <h1 className={styles.title}> {pokemon.name}</h1>
       <Image
-        className={styles.img}
+        className={img}
         width={140}
         height={140}
         alt={pokemon.name}
         src={imageUrl}
+        unoptimized
       />
 
       <div>
